@@ -31,14 +31,14 @@ function xmldb_local_ltiprovider_upgrade($oldversion) {
     $dbman = $DB->get_manager();
 
     if ($oldversion < 2011121703) {
-        
+
         $table = new xmldb_table('local_ltiprovider');
-        
+
         $field = new xmldb_field('enrolperiod', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0, 'sendgrades');
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
-        
+
         $field = new xmldb_field('enrolstartdate', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0, 'enrolperiod');
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
@@ -55,6 +55,86 @@ function xmldb_local_ltiprovider_upgrade($oldversion) {
         }
 
         upgrade_plugin_savepoint(true, 2011121703, 'local', 'ltiprovider');
+    }
+
+    if ($oldversion < 2011121707) {
+
+        $table = new xmldb_table('local_ltiprovider');
+
+        $field = new xmldb_field('userprofileupdate', XMLDB_TYPE_INTEGER, 1, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 1, 'maxenrolled');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $field = new xmldb_field('syncmembers', XMLDB_TYPE_INTEGER, 1, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0, 'userprofileupdate');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $field = new xmldb_field('syncmode', XMLDB_TYPE_INTEGER, 2, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0, 'syncmembers');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $field = new xmldb_field('syncperiod', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0, 'syncmode');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $table = new xmldb_table('local_ltiprovider_user');
+
+        $field = new xmldb_field('membershipsurl', XMLDB_TYPE_TEXT, "small", null, null, null, null, 'lastaccess');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $field = new xmldb_field('membershipsid', XMLDB_TYPE_TEXT, "small", null, null, null, null, 'membershipsurl');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        upgrade_plugin_savepoint(true, 2011121707, 'local', 'ltiprovider');
+    }
+
+    if ($oldversion < 2014080102) {
+
+        $table = new xmldb_table('local_ltiprovider');
+
+        $field = new xmldb_field('requirecompletion', XMLDB_TYPE_INTEGER, 2, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0, 'lastsync');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        upgrade_plugin_savepoint(true, 2014080102, 'local', 'ltiprovider');
+    }
+
+    if ($oldversion < 2014080103) {
+
+        $table = new xmldb_table('local_ltiprovider');
+
+        $field = new xmldb_field('enrolinst', XMLDB_TYPE_INTEGER, 2, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 1, 'requirecompletion');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $field = new xmldb_field('enrollearn', XMLDB_TYPE_INTEGER, 2, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 1, 'enrolinst');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        upgrade_plugin_savepoint(true, 2014080103, 'local', 'ltiprovider');
+    }
+
+    if ($oldversion < 2018112200) {
+        $table = new xmldb_table('local_ltiprovider');
+        
+        $field = new xmldb_field('autogroup', XMLDB_TYPE_INTEGER, 1, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0, 'maxenrolled');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $table = new xmldb_table('local_ltiprovider');
+        
+        $field = new xmldb_field('hidecustommenu', XMLDB_TYPE_INTEGER, 1, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0, 'hiderightblocks');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        upgrade_plugin_savepoint(true, 2018112200, 'local', 'ltiprovider');
     }
 
     return true;

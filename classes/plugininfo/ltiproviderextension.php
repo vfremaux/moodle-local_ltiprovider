@@ -15,22 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details.
+ * LTI Provider source plugin info.
  *
  * @package    local
  * @subpackage ltiprovider
- * @copyright  2011 Juan Leyva <juanleyvadelgado@gmail.com>
+ * @copyright  2014 Juan Leyva <juanleyvadelgado@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+namespace local_ltiprovider\plugininfo;
 
-$plugin->version  = 2022092000;
-$plugin->requires = 2014051200; // Require Moodle version.
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release  = '4.5.0';
-$plugin->component = 'local_ltiprovider';
+use core\plugininfo\base;
 
-// Non moodle attributes.
-$plugin->codeincrement = '4.5.0001';
-$plugin->privacy = 'public';
+defined('MOODLE_INTERNAL') || die();
+
+
+class ltiproviderextension extends base {
+    // Accepts 100% base implementation.
+
+}

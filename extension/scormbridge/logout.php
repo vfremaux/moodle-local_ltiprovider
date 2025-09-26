@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details.
+ * Force uses logout
  *
  * @package    local
  * @subpackage ltiprovider
@@ -23,14 +23,17 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+require_once(dirname(__FILE__) . '../../../../../config.php');
 
-$plugin->version  = 2022092000;
-$plugin->requires = 2014051200; // Require Moodle version.
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release  = '4.5.0';
-$plugin->component = 'local_ltiprovider';
+$toolid = required_param('toolid', PARAM_INT);
 
-// Non moodle attributes.
-$plugin->codeincrement = '4.5.0001';
-$plugin->privacy = 'public';
+if ($tool = $DB->get_record('local_ltiprovider', array('id' => $toolid))) {
+    // Force logout.
+    $authsequence = get_enabled_auth_plugins();
+    foreach ($authsequence as $authname) {
+        $authplugin = get_auth_plugin($authname);
+        $authplugin->logoutpage_hook();
+    }
+
+    require_logout();
+}

@@ -9,8 +9,8 @@ function getLastOAuthBodyBaseString() {
     global $LastOAuthBodyBaseString;
     return $LastOAuthBodyBaseString;
 }
- 
-function handleOAuthBodyPOST($oauth_consumer_key, $oauth_consumer_secret) 
+
+function handleOAuthBodyPOST($oauth_consumer_key, $oauth_consumer_secret)
 {
     $request_headers = OAuthUtil::get_headers();
     // print_r($request_headers);
@@ -71,6 +71,43 @@ function sendOAuthBodyPOST($method, $endpoint, $oauth_consumer_key, $oauth_consu
     $hash = base64_encode(sha1($body, TRUE));
 
     $parms = array('oauth_body_hash' => $hash);
+
+    $test_token = '';
+    $hmac_method = new OAuthSignatureMethod_HMAC_SHA1();
+    $test_consumer = new OAuthConsumer($oauth_consumer_key, $oauth_consumer_secret, NULL);
+
+    $acc_req = OAuthRequest::from_consumer_and_token($test_consumer, $test_token, $method, $endpoint, $parms);
+    $acc_req->sign_request($hmac_method, $test_consumer, $test_token);
+
+    // Pass this back up "out of band" for debugging
+    global $LastOAuthBodyBaseString;
+    $LastOAuthBodyBaseString = $acc_req->get_signature_base_string();
+    // echo($LastOAuthBodyBaseString."\m");
+
+    $headers = array();
+    $headers[] = $acc_req->to_header();
+    $headers[] = "Content-type: " . $content_type;
+
+    $curl = new \curl();
+    $curl->setHeader($headers);
+    $response =  $curl->post($endpoint, $body);
+
+    return $response;
+}
+
+function sendOAuthParamsPOST($method, $endpoint, $oauth_consumer_key, $oauth_consumer_secret, $content_type, $params)
+{
+
+    if (is_array($params)) {
+        $body = http_build_query($params, '', '&');
+    } else {
+        $body = $params;
+    }
+
+    $hash = base64_encode(sha1($body, TRUE));
+
+    $parms = $params;
+    $parms['oauth_body_hash'] = $hash;
 
     $test_token = '';
     $hmac_method = new OAuthSignatureMethod_HMAC_SHA1();
